@@ -1,0 +1,6 @@
+console.log("Hello Friend.")
+console.log("Hello Friend.")
+console.log("Hello Friend.")
+console.log("Hello Friend.")
+console.log("Hello Friend.")
+console.log("Hello Friend.")
