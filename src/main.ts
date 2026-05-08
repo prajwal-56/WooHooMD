@@ -4,7 +4,7 @@ export default class WooHooPLugin extends Plugin {
 	async onload() {
 		console.log("WoooHooo ! it loaded ")
 
-		this.registerDomEvent( document , 'click' , (event: MouseEvent) =>{
+		this.registerDomEvent( document , 'click' , async (event: MouseEvent) =>{
 			// console.log("the user clicked smth. woohoo" , event.target);
 			
 			const target = event.target as HTMLElement;
@@ -22,7 +22,16 @@ export default class WooHooPLugin extends Plugin {
 
 			// renders the gif
 			const gif = document.createElement('img');
-			gif.src = 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNW5kb2pqbmdwcHR3amZuNjJ0OTZobmFoeXBpamlqczVrczgwY3kzaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/bpTL6wXRuMQpMIVduB/giphy.gif';
+
+			var gifPath = ".obsidian/plugins/woo-hoo/gifs/";
+			const files = await this.app.vault.adapter.list(gifPath);
+			const gifFiles = files.files
+			console.log(files);
+
+			const randomGif: any = gifFiles[Math.floor(Math.random() * gifFiles.length)];
+			gif.src = this.app.vault.adapter.getResourcePath(randomGif);
+
+			
 			gif.style.position = 'fixed';
 			// gif.style.width = '250px';
 			gif.style.top = '50%';
