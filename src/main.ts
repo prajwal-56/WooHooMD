@@ -1,6 +1,21 @@
 import { Plugin } from 'obsidian';
 
 export default class WooHooPLugin extends Plugin {
+
+	// Determine the duration from Graphic Control Extension (reffer : https://en.wikipedia.org/wiki/GIF#:~:text=Graphic%20Control%20Extension,-30D)
+	getGifDuration(buffer: ArrayBuffer): number {
+		const bytes: Uint8Array<ArrayBuffer> = new Uint8Array(buffer);
+		let duration = 0;
+
+		for( let i = 0; i < bytes.length - 5; i++) {
+			if( bytes[i] == 0x21 && bytes[i+1] == 0xF9) {
+				const delay = ((bytes[i+4] as number) | ((bytes[i+5] as number) << 8 )) * 10;
+				duration += delay;
+			}
+		}
+		return duration;
+	}
+	
 	async onload() {
 		console.log("WoooHooo ! it loaded ")
 
@@ -31,7 +46,15 @@ export default class WooHooPLugin extends Plugin {
 			const randomGif: any = gifFiles[Math.floor(Math.random() * gifFiles.length)];
 			gif.src = this.app.vault.adapter.getResourcePath(randomGif);
 
-			
+			console.log(gifFiles);
+			console.log(randomGif);
+			const data = await this.app.vault.adapter.readBinary(gifPath);
+			const duration = randomGif.endsWith('.gif)') 
+				? this.getGifDuration(data)
+				: 3000; // default duration for non-gif files 
+
+			console.log("duration :" + duration);
+
 			gif.style.position = 'fixed';
 			// gif.style.width = '250px';
 			gif.style.top = '50%';
@@ -44,7 +67,7 @@ export default class WooHooPLugin extends Plugin {
 
 			setTimeout(() => {
 				document.body.removeChild(gif);
-			} , 5000);
+			} , duration);
 
 	
 		});
