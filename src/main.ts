@@ -13,7 +13,6 @@ export default class WooHooPLugin extends Plugin {
 		for( let i = 0; i < bytes.length - 5; i++) {
 			if( bytes[i] == 0x21 && bytes[i+1] == 0xF9) {
 				const delay = ((bytes[i+4] as number) | ((bytes[i+5] as number) << 8 )) * 10;
-				console.log('found frame, delay:', delay);
 				duration += delay;
 			}
 		}
@@ -74,7 +73,7 @@ export default class WooHooPLugin extends Plugin {
 
 			setTimeout(() => {
 				document.body.removeChild(gif);
-			} , duration);
+			} , 3000);
 
 	
 		});
