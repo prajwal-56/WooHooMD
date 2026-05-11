@@ -1,8 +1,9 @@
 import { Plugin } from 'obsidian';
-import { MyPluginSettings } from "./settings";
+import { WooHooSettings, DEFAULT_SETTINGS, WooHooSettingTab } from "./settings";
+
 
 export default class WooHooPLugin extends Plugin {
-	settings!: MyPluginSettings;
+	settings!: WooHooSettings;
 
 	// Determine the duration from Graphic Control Extension (reffer : https://en.wikipedia.org/wiki/GIF#:~:text=Graphic%20Control%20Extension,-30D)
 	getGifDuration(buffer: ArrayBuffer): number {
@@ -20,7 +21,8 @@ export default class WooHooPLugin extends Plugin {
 	}
 	
 	async onload() {
-		console.log("WoooHooo ! it loaded ")
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.addSettingTab(new WooHooSettingTab(this.app, this));
 
 		this.registerDomEvent( document , 'click' , async (event: MouseEvent) =>{
 			// console.log("the user clicked smth. woohoo" , event.target);
@@ -62,7 +64,8 @@ export default class WooHooPLugin extends Plugin {
 			// gif.loop = false;
 			// gif.muted = true; // in case
 			gif.style.position = 'fixed';
-			// gif.style.width = '250px';
+			gif.style.width = this.settings.gifSize + 'px';
+			// gif.style.height = this.settings.gifSize + 'px';
 			gif.style.top = '50%';
 			gif.style.left = '50%';
 			gif.style.transform = 'translate( -50% , -50%)';
@@ -73,7 +76,7 @@ export default class WooHooPLugin extends Plugin {
 
 			setTimeout(() => {
 				document.body.removeChild(gif);
-			} , 3000);
+			} , this.settings.duration || duration);
 
 	
 		});
