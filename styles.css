@@ -1,8 +1,8 @@
-/*
+.woohoo-gif {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
-
-If your plugin does not need CSS, delete this file.
-
-*/
+.woohoo-gif.visible {
+    opacity: 1;
+}

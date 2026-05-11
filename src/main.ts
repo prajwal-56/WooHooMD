@@ -42,6 +42,7 @@ export default class WooHooPLugin extends Plugin {
 
 			// renders the gif
 			const gif = document.createElement('img');
+			gif.classList.add('woohoo-gif');
 
 			var gifPath = ".obsidian/plugins/woo-hoo/gifs/";
 			const files = await this.app.vault.adapter.list(gifPath);
@@ -74,11 +75,22 @@ export default class WooHooPLugin extends Plugin {
 
 			document.body.appendChild(gif);
 
-			setTimeout(() => {
-				document.body.removeChild(gif);
-			} , this.settings.duration || duration);
+			// mild fade-in effect 
+			setTimeout(() => gif.classList.add('visible'), 10);
+			
+			// setTimeout(() => {
+			// 	document.body.removeChild(gif);
+			// } , this.settings.duration || duration);	
 
-	
+			//mild fade-out effect
+			setTimeout(() => {
+				gif.classList.remove('visible');
+				setTimeout(() => {
+					if (document.body.contains(gif)) {
+						document.body.removeChild(gif);
+					}
+				}, 300);
+			}, this.settings.duration);
 		});
 
 	// onunload() {
