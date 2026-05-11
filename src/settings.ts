@@ -30,7 +30,9 @@ export class SampleSettingTab extends PluginSettingTab {
 				.setValue(this.plugin.settings.mySetting)
 				.onChange(async (value) => {
 					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
+					await this.plugin.saveData(this.plugin.settings);
 				}));
 	}
 }
+
+	

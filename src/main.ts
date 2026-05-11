@@ -1,15 +1,19 @@
 import { Plugin } from 'obsidian';
+import { MyPluginSettings } from "./settings";
 
 export default class WooHooPLugin extends Plugin {
+	settings!: MyPluginSettings;
 
 	// Determine the duration from Graphic Control Extension (reffer : https://en.wikipedia.org/wiki/GIF#:~:text=Graphic%20Control%20Extension,-30D)
 	getGifDuration(buffer: ArrayBuffer): number {
 		const bytes: Uint8Array<ArrayBuffer> = new Uint8Array(buffer);
 		let duration = 0;
+		console.log('the method got called !')
 
 		for( let i = 0; i < bytes.length - 5; i++) {
 			if( bytes[i] == 0x21 && bytes[i+1] == 0xF9) {
 				const delay = ((bytes[i+4] as number) | ((bytes[i+5] as number) << 8 )) * 10;
+				console.log('found frame, delay:', delay);
 				duration += delay;
 			}
 		}
@@ -48,13 +52,16 @@ export default class WooHooPLugin extends Plugin {
 
 			console.log(gifFiles);
 			console.log(randomGif);
-			const data = await this.app.vault.adapter.readBinary(gifPath);
-			const duration = randomGif.endsWith('.gif)') 
-				? this.getGifDuration(data)
+			console.log("finding the duration of the gif...")
+			const duration = randomGif.endsWith('.gif')
+				? this.getGifDuration(await this.app.vault.adapter.readBinary(randomGif))
 				: 3000; // default duration for non-gif files 
 
 			console.log("duration :" + duration);
 
+			// gif.autoplay = true;
+			// gif.loop = false;
+			// gif.muted = true; // in case
 			gif.style.position = 'fixed';
 			// gif.style.width = '250px';
 			gif.style.top = '50%';
