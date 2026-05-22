@@ -9,7 +9,6 @@ export default class WooHooPLugin extends Plugin {
 	getGifDuration(buffer: ArrayBuffer): number {
 		const bytes: Uint8Array<ArrayBuffer> = new Uint8Array(buffer);
 		let duration = 0;
-		console.log('the method got called !')
 
 		for( let i = 0; i < bytes.length - 5; i++) {
 			if( bytes[i] == 0x21 && bytes[i+1] == 0xF9) {
@@ -25,7 +24,6 @@ export default class WooHooPLugin extends Plugin {
 		this.addSettingTab(new WooHooSettingTab(this.app, this));
 
 		this.registerDomEvent( document , 'click' , async (event: MouseEvent) =>{
-			// console.log("the user clicked smth. woohoo" , event.target);
 			
 			const target = event.target as HTMLElement;
 			
@@ -38,6 +36,7 @@ export default class WooHooPLugin extends Plugin {
 			// it might not be updated yet, so we check for the opposite of checked
 			if(isChecked) return; 
 		
+
 			console.log("It's checked. yay 🎉")
 
 			// renders the gif
@@ -47,19 +46,14 @@ export default class WooHooPLugin extends Plugin {
 			var gifPath = ".obsidian/plugins/woo-hoo/gifs/";
 			const files = await this.app.vault.adapter.list(gifPath);
 			const gifFiles = files.files
-			console.log(files);
 
 			const randomGif: any = gifFiles[Math.floor(Math.random() * gifFiles.length)];
 			gif.src = this.app.vault.adapter.getResourcePath(randomGif);
 
-			console.log(gifFiles);
-			console.log(randomGif);
-			console.log("finding the duration of the gif...")
 			const duration = randomGif.endsWith('.gif')
 				? this.getGifDuration(await this.app.vault.adapter.readBinary(randomGif))
 				: 3000; // default duration for non-gif files 
 
-			console.log("duration :" + duration);
 
 			// gif.autoplay = true;
 			// gif.loop = false;
@@ -77,10 +71,6 @@ export default class WooHooPLugin extends Plugin {
 
 			// mild fade-in effect 
 			setTimeout(() => gif.classList.add('visible'), 10);
-			
-			// setTimeout(() => {
-			// 	document.body.removeChild(gif);
-			// } , this.settings.duration || duration);	
 
 			//mild fade-out effect
 			setTimeout(() => {
