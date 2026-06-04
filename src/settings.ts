@@ -4,11 +4,13 @@ import WooHooPlugin from "./main";
 export interface WooHooSettings {
 	duration: number;
 	gifSize: number;
+	gifFolder: string;
 }
 
 export const DEFAULT_SETTINGS: WooHooSettings = {
 	duration: 3000,
-	gifSize: 250
+	gifSize: 250,
+	gifFolder: ""
 }
 
 export class WooHooSettingTab extends PluginSettingTab {
@@ -45,6 +47,18 @@ export class WooHooSettingTab extends PluginSettingTab {
 					this.plugin.settings.gifSize = Number(value);
 					await this.plugin.saveData(this.plugin.settings);
 				}));
+
+		new Setting(containerEl)
+			.setName('Pick a folder containing Gifs')
+			.setDesc('Pick the folder which contains the gif you want to play')
+			.addText(text => text
+				.setPlaceholder('""')
+				.setValue(this.plugin.settings.gifFolder.toString())
+				.onChange(async (value) => {
+					this.plugin.settings.gifFolder = String(value);
+					await this.plugin.saveData(this.plugin.settings);
+				})
+			)
 
 	}
 

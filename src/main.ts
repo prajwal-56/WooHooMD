@@ -59,13 +59,16 @@ export default class WooHooPLugin extends Plugin {
 			if(isChecked) return; 
 		
 
-			console.log("It's checked. yay 🎉")
-			console.log("sssss")
 			// renders the gif
 			const gif = document.createElement('img');
 			gif.classList.add('woohoo-gif');
 
-			var gifPath = ".obsidian/plugins/woo-hoo/gifs/";
+			var gifPath = this.settings.gifFolder;
+			
+			if(!gifPath) {
+				console.log("the gif folder was not set")
+				return;
+			}
 			const files = await this.app.vault.adapter.list(gifPath);
 			const gifFiles = files.files
 
@@ -96,9 +99,9 @@ export default class WooHooPLugin extends Plugin {
 
 			const final_duration = (duration || this.settings.duration )
 
-			console.log('settings duration:', this.settings.duration);
-			console.log('gif duration:', duration);
-			console.log('final duration:', final_duration);
+			// console.log('settings duration:', this.settings.duration);
+			// console.log('gif duration:', duration);
+			// console.log('final duration:', final_duration);
 
 			//mild fade-out effect
 			setTimeout(() => {
@@ -113,7 +116,7 @@ export default class WooHooPLugin extends Plugin {
 		});
 
 	}
-	// onunload() {
-	// 	console.log(" uhh oh. It's unloaded :(")
-	// }
+	onunload() {
+		console.log(" uhh oh. It's unloaded :(")
+	}
 }
