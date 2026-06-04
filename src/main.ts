@@ -7,14 +7,30 @@ export default class WooHooPLugin extends Plugin {
 
 	// Determine the duration from Graphic Control Extension (reffer : https://en.wikipedia.org/wiki/GIF#:~:text=Graphic%20Control%20Extension,-30D)
 	getGifDuration(buffer: ArrayBuffer): number {
-		const bytes: Uint8Array<ArrayBuffer> = new Uint8Array(buffer);
+		const bytes = new Uint8Array(buffer);
 		let duration = 0;
+		let pos = 13; // pointer - skips the header (headers takes up 13 bytes )  
+		
+		if( (bytes[10] & 0x80) !== 0 ){
+			pos += 3 * Math.pow(2 , (bytes[10] & 0x07) + 1);
+		} 
 
-		for( let i = 0; i < bytes.length - 5; i++) {								 
-			if( bytes[i] == 0x21 && bytes[i+1] == 0xF9 && bytes[i+2] == 0x04 ) {
-				const delay = ((bytes[i+4] as number) | ((bytes[i+5] as number) << 8 )) * 10;
-				duration += delay;
+		while (pos < bytes.length){
+			const block = bytes[pos];
+			if(block === 0x21){
+				if (bytes[pos + 1] === 0xF9){
+					const delay = bytes[pos + 4] + (bytes[pos + 5] << 8);
+					duration += delay * 10;
+				}
+				pos += 2 + 1 + bytes[pos + 2] + 1;
 			}
+			else if(block === 0x2C){
+				pos += 10;
+				while (bytes[pos] !== 0) {pos += bytes[pos] + 1;}
+				pos++;
+			}
+			else if (block === 0x3B) break;
+			else break;
 		}
 
 		if (duration >= 60000) duration = 60000; // max duration = 60 seconds 

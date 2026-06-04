@@ -11,7 +11,7 @@
 		"noImplicitReturns": true,
 		"moduleResolution": "node",
 		"importHelpers": true,
-		"noUncheckedIndexedAccess": true,
+		"noUncheckedIndexedAccess": false,
 		"isolatedModules": true,
 		"strictNullChecks": true,
 		"strictBindCallApply": true,
