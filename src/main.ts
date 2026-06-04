@@ -10,18 +10,24 @@ export default class WooHooPLugin extends Plugin {
 		const bytes: Uint8Array<ArrayBuffer> = new Uint8Array(buffer);
 		let duration = 0;
 
-		for( let i = 0; i < bytes.length - 5; i++) {
-			if( bytes[i] == 0x21 && bytes[i+1] == 0xF9) {
+		for( let i = 0; i < bytes.length - 5; i++) {								 
+			if( bytes[i] == 0x21 && bytes[i+1] == 0xF9 && bytes[i+2] == 0x04 ) {
 				const delay = ((bytes[i+4] as number) | ((bytes[i+5] as number) << 8 )) * 10;
 				duration += delay;
 			}
 		}
+
+		if (duration >= 60000) duration = 60000; // max duration = 60 seconds 
 		return duration;
 	}
 	
 	async onload() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 		this.addSettingTab(new WooHooSettingTab(this.app, this));
+
+		if(this.settings.duration == null || this.settings.duration == undefined ){
+			this.settings.duration = DEFAULT_SETTINGS.duration
+		}
 
 		this.registerDomEvent( document , 'click' , async (event: MouseEvent) =>{
 			
@@ -38,7 +44,7 @@ export default class WooHooPLugin extends Plugin {
 		
 
 			console.log("It's checked. yay 🎉")
-
+			console.log("sssss")
 			// renders the gif
 			const gif = document.createElement('img');
 			gif.classList.add('woohoo-gif');
@@ -70,7 +76,13 @@ export default class WooHooPLugin extends Plugin {
 			document.body.appendChild(gif);
 
 			// mild fade-in effect 
-			setTimeout(() => gif.classList.add('visible'), 10);
+			setTimeout(() => gif.classList.add('visible'), 300);
+
+			const final_duration = (duration || this.settings.duration )
+
+			console.log('settings duration:', this.settings.duration);
+			console.log('gif duration:', duration);
+			console.log('final duration:', final_duration);
 
 			//mild fade-out effect
 			setTimeout(() => {
@@ -79,12 +91,13 @@ export default class WooHooPLugin extends Plugin {
 					if (document.body.contains(gif)) {
 						document.body.removeChild(gif);
 					}
-				}, 300);
-			}, this.settings.duration);
+				}, 3000);
+			// }, 30000);
+			} , final_duration );
 		});
 
+	}
 	// onunload() {
 	// 	console.log(" uhh oh. It's unloaded :(")
 	// }
-}
 }
