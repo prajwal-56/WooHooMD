@@ -1,6 +1,14 @@
 .woohoo-gif {
     opacity: 0;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
     transition: opacity 0.3s ease;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: var(--woohoo-gif-size, 250px);
+    pointer-events: none; 
+    width: var(--woohoo-gif-size, 250px);
 }
 
 .woohoo-gif.visible {

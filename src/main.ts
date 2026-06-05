@@ -83,14 +83,7 @@ export default class WooHooPLugin extends Plugin {
 			// gif.autoplay = true;
 			// gif.loop = false;
 			// gif.muted = true; // in case
-			gif.style.position = 'fixed';
-			gif.style.width = this.settings.gifSize + 'px';
-			// gif.style.height = this.settings.gifSize + 'px';
-			gif.style.top = '50%';
-			gif.style.left = '50%';
-			gif.style.transform = 'translate( -50% , -50%)';
-			gif.style.zIndex = '9999';
-
+			gif.style.setProperty('--woohoo-gif-size' , `${this.settings.gifSize}px`);
 
 			document.body.appendChild(gif);
 
